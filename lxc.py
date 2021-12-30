@@ -5,19 +5,19 @@ import lxc-nat-py # https://github.com/daniel5gh/lxc-nat-py
 class CreationError(Exception):    
   pass
 
-def create_instance(name: str, port: list, internal_ip: list, os: list):
+def create_instance(name: str, port: list, os: list): # internal_ip: list
   c = lxc.Container(name)
   if c.defined:
     print("Container already exists", file=sys.stderr)
     raise CreationError
 
-  for x in range(len(internal_ip)):
-    container.network[x].ipv4 = internal_ip[x]
-    container.network[x].ipv4_gateway = "?" # I don't know enough about lxc networking to have any idea what to put here
+  # for x in range(len(internal_ip)):
+  #  container.network[x].ipv4 = internal_ip[x]
+  #  container.network[x].ipv4_gateway = "?" # I don't know enough about lxc networking to have any idea what to put here
 
   if not c.create("download", lxc.LXC_CREATE_QUIET, {"dist": os[0],
                                                    "release": os[1],
-                                                   "arch": "i386"}): # don't know what the x64 equiv is here either
+                                                   "arch": os[2]}): # amd64 or i386
     print("Failed to create the container rootfs", file=sys.stderr)
 
   if not c.start():

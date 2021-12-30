@@ -79,3 +79,15 @@ def console_instance(name: str, commands: list): # definitely should rename this
                           x)
 
   # TODO: figure out what to return to get SIGOUT/STDERR/TTY
+  
+def get_ip_instance(name: str, index: int=0):
+  c = lxc.Container(name)
+  
+  return c.network[index].ipv4, c.network[index].ipv4_gateway
+
+def set_ip_instance(name: str, index: int=0, new_value: str):
+  c = lxc.Container(name)
+  
+  c.network[index].ipv4 = new_value # todo: make more extensible (+ ipv6 support)
+  
+  return True

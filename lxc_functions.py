@@ -6,7 +6,7 @@ import sys
 class CreationError(Exception):    
   pass
 
-def create_instance(name: str, os: list): # internal_ip: list, port: list
+def create_instance(name: str, os: list, keyserver: str='keyserver.ubuntu.com'): # internal_ip: list, port: list
   c = lxc.Container(name)
   if c.defined:
     print("Container already exists", file=sys.stderr)
@@ -18,7 +18,8 @@ def create_instance(name: str, os: list): # internal_ip: list, port: list
 
   if not c.create("download", lxc.LXC_CREATE_QUIET, {"dist": os[0],
                                                    "release": os[1],
-                                                   "arch": os[2]}): # amd64 or i386
+                                                   "arch": os[2], # amd64 or i386
+                                                   "keyserver": keyserver}): 
     print("Failed to create the container rootfs", file=sys.stderr)
 
   if not c.start():

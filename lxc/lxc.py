@@ -1,11 +1,12 @@
 import lxc
-import flask_hook # for what? only god knows
-import lxc-nat-py # https://github.com/daniel5gh/lxc-nat-py
+import sys
+# import flask_hook # for what? only god knows
+# import lxc-nat-py # https://github.com/daniel5gh/lxc-nat-py
 
 class CreationError(Exception):
   pass
 
-def create_instance(name: str, port: list, os: list): # internal_ip: list
+def create_instance(name: str, os: list, keyserver: str='keyserver.ubuntu.com'): # internal_ip: list, port: list
   c = lxc.Container(name)
   if c.defined:
     print("Container already exists", file=sys.stderr)
@@ -17,17 +18,18 @@ def create_instance(name: str, port: list, os: list): # internal_ip: list
 
   if not c.create("download", lxc.LXC_CREATE_QUIET, {"dist": os[0],
                                                    "release": os[1],
-                                                   "arch": os[2]}): # amd64 or i386
+                                                   "arch": os[2], # amd64 or i386
+                                                   "keyserver": keyserver}):
     print("Failed to create the container rootfs", file=sys.stderr)
 
   if not c.start():
     print("Failed to start the container", file=sys.stderr)
     raise CreationError
 
-  f = open('conf', 'r+') # def should wrap this in a try except
-  ...
-  f.write(new_conf)
-  lxc-nat-py.rerun(conf='conf') # may be a good idea to move to front, so additional reboot is not necessary
+  # f = open('conf', 'r+') # def should wrap this in a try except
+  # ...
+  # f.write(new_conf)
+  # lxc-nat-py.rerun(conf='conf') # may be a good idea to move to front, so additional reboot is not necessary
 
   return (c, True) # object containing queriable info (possible security risk) and True because why not
 

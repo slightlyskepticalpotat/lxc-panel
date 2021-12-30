@@ -1,11 +1,12 @@
 import lxc
+import sys
 # import flask_hook # for what? only god knows
 # import lxc-nat-py # https://github.com/daniel5gh/lxc-nat-py
 
 class CreationError(Exception):    
   pass
 
-def create_instance(name: str, port: list, os: list): # internal_ip: list
+def create_instance(name: str, os: list): # internal_ip: list, port: list
   c = lxc.Container(name)
   if c.defined:
     print("Container already exists", file=sys.stderr)

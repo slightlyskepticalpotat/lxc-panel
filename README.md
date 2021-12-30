@@ -14,6 +14,11 @@ The goal of this project is to make a resource light panel with [lxc](https://li
     - [ ] centos/alma/rocky
     - [ ] gentoo
     - [ ] fedora
+  - [ ] fresh install with basic services
+    - [ ] docker
+    - [ ] apache2
+    - [ ] webdav/SMB
+    - [ ] ?
 - [ ] nat networking
 - [ ] ipv6 support
 - [ ] fetch functions for
@@ -21,3 +26,8 @@ The goal of this project is to make a resource light panel with [lxc](https://li
   - [ ] nat ports
   - [ ] resource use
 - [ ] resource limits
+  - [ ] nice priorities too
+- [ ] container deletion
+- [ ] container backups
+  - [ ] restore from backup tests
+- [ ] nested containers?

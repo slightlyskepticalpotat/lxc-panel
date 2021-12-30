@@ -1,6 +1,6 @@
 import lxc
-import flask_hook # for what? only god knows
-import lxc-nat-py # https://github.com/daniel5gh/lxc-nat-py
+# import flask_hook # for what? only god knows
+# import lxc-nat-py # https://github.com/daniel5gh/lxc-nat-py
 
 class CreationError(Exception):    
   pass
@@ -24,10 +24,10 @@ def create_instance(name: str, port: list, os: list): # internal_ip: list
     print("Failed to start the container", file=sys.stderr)
     raise CreationError
 
-  f = open('conf', 'r+') # def should wrap this in a try except
-  ...
-  f.write(new_conf)
-  lxc-nat-py.rerun(conf='conf') # may be a good idea to move to front, so additional reboot is not necessary
+  # f = open('conf', 'r+') # def should wrap this in a try except
+  # ...
+  # f.write(new_conf)
+  # lxc-nat-py.rerun(conf='conf') # may be a good idea to move to front, so additional reboot is not necessary
 
   return (c, True) # object containing queriable info (possible security risk) and True because why not
 

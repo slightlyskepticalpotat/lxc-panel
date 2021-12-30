@@ -2,7 +2,7 @@ import lxc
 import flask_hook # for what? only god knows
 import lxc-nat-py # https://github.com/daniel5gh/lxc-nat-py
 
-class CreationError(Exception):    
+class CreationError(Exception):
   pass
 
 def create_instance(name: str, port: list, os: list): # internal_ip: list
@@ -43,37 +43,37 @@ def setup_instance(name: str, commands: list): # commands must be double list! i
 
 def start_instance(name: str):
   c = lxc.Container(name)
-  
+
   if not c.start():
     print("Failed to start the container", file=sys.stderr)
     raise CreationError
   if not c.get_ips(timeout=30):
     print("Failed to get IPs", file=sys.stderr)
     raise CreationError
-    
+
   return True
-  
+
 def stop_instance(name: str, force: bool=False):
   c = lxc.Container(name)
-  
+
   if force is True:
     if not c.stop():
       print("Failed to stop the container", file=sys.stderr)
       raise CreationError
-    
+
   if not c.shutdown(30):
     print("Failed to cleanly shutdown the container, forcing.")
     if not c.stop():
       print("Failed to stop the container", file=sys.stderr)
       raise CreationError
-  
+
   return True
 
 def console_instance(name: str, commands: list): # definitely should rename this sometime
   c = lxc.Container(name)
-  
+
   for x in commands:
       c.attach_wait(lxc.attach_run_command,
                           x)
-      
+
   # TODO: figure out what to return to get SIGOUT/STDERR/TTY

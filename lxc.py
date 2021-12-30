@@ -1,3 +1,4 @@
+import lxc
 import flask_hook # for what? only god knows
 import lxc-nat-py # https://github.com/daniel5gh/lxc-nat-py
 
@@ -31,22 +32,12 @@ def create_instance(name: str, port: list, internal_ip: list, os: list):
   return (c, True) # object containing queriable info (possible security risk) and True because why not
 
 def setup_instance(name: str, commands: list): # commands must be double list! if only one command, wrap in this format: [[{command}]]
-  c = lxc.Container(name) # TODO: use smaller functions like start_function instead of implementing all of this seperately
+  c = lxc.Container(name)
 
   if c.running:
-    if not c.stop():
-      print("Failed to kill the container", file=sys.stderr)
-      raise CreationError # wrong error but who cares
-  if not c.start():
-    print("Failed to start the container", file=sys.stderr)
-    raise CreationError
-  if not c.get_ips(timeout=30):
-    print("Failed to get IPs", file=sys.stderr)
-    raise CreationError
-
-  for x in commands:
-      c.attach_wait(lxc.attach_run_command,
-                          x)
+    stop_instance(name=name, force=True)
+  start_instance(name=name)
+  console_instance(name=name, commands=commands)
 
   return True
 
@@ -60,18 +51,29 @@ def start_instance(name: str):
     print("Failed to get IPs", file=sys.stderr)
     raise CreationError
     
-def stop_instance(name: str):
+  return True
+  
+def stop_instance(name: str, force: bool=False):
   c = lxc.Container(name)
   
+  if force is True:
+    if not c.stop():
+      print("Failed to stop the container", file=sys.stderr)
+      raise CreationError
+    
   if not c.shutdown(30):
     print("Failed to cleanly shutdown the container, forcing.")
     if not c.stop():
       print("Failed to stop the container", file=sys.stderr)
       raise CreationError
-    
+  
+  return True
+
 def console_instance(name: str, commands: list): # definitely should rename this sometime
   c = lxc.Container(name)
   
   for x in commands:
       c.attach_wait(lxc.attach_run_command,
                           x)
+      
+  # TODO: figure out what to return to get SIGOUT/STDERR/TTY
